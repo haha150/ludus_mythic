@@ -1,0 +1,11 @@
+[Unit]
+    Description=Mythic Team Server
+    After=network.target
+    StartLimitIntervalSec=0
+[Service]
+    Type=oneshot
+    User=root
+    WorkingDirectory=/opt/mythic
+    ExecStart=/opt/mythic/mythic-cli start
+[Install]
+    WantedBy=multi-user.target
