@@ -16,3 +16,5 @@ galaxy_info:
     - name: Ubuntu
       versions:
         - jammy
+  galaxy_tags:
+    - ludusmythic
