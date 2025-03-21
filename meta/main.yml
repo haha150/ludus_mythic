@@ -1,6 +1,7 @@
 ---
 dependencies:
   - role: geerlingguy.docker
+    version: "7.4.6"
 
 galaxy_info:
   role_name: ludus_mythic
