@@ -1,76 +1,65 @@
+  # - name: Install for Docker installation
+  #   ansible.builtin.apt:
+  #     name: 
+  #       - gpg
+  #       - ca-certificates
+  #       - git
+  #       - make
+  #     state: present
+  #     update_cache: yes
+  #     install_recommends: yes
 
-  # - name: Ensure old service has stopped
-  #   ansible.builtin.command: "systemctl stop mythicteamserver"
-  #   ignore_errors: true
-  #   become: true
+  # - name: set APT Key for Docker
+  #   ansible.builtin.apt_key:
+  #     url: https://download.docker.com/linux/ubuntu/gpg
+  #     keyring: /usr/share/keyrings/docker-archive-keyring.gpg
+  #     state: present
+  #   when: ansible_distribution == "Ubuntu"
 
-  # - name: Ensure any old mythicteamserver service is disabled
-  #   ansible.builtin.command: "systemctl disable mythicteamserver"
-  #   become: true
-  #   ignore_errors: true
+  # - name: Add Docker repository into sources list for Ubuntu
+  #   ansible.builtin.apt_repository:
+  #     repo: "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
+  #     state: present
+  #     update_cache: True
+  #   when: ansible_distribution == "Ubuntu"
 
-  # - name: Reload system manager
-  #   ansible.builtin.shell: "systemctl daemon-reload && systemctl reset-failed"
-  #   become: true
+  # - name: set APT Key for Docker
+  #   ansible.builtin.apt_key:
+  #     url: https://download.docker.com/linux/debian/gpg
+  #     keyring: /usr/share/keyrings/docker-archive-keyring.gpg
+  #     state: present
+  #   when: ansible_distribution == "Debian"
 
-  # - name: Ensure old system files are gone
-  #   ansible.builtin.file:
-  #     path: "/etc/systemd/system/mythicteamserver.service"
-  #     state: absent
-  #   become: true
+  # - name: Add Docker repository into sources list for Debian
+  #   ansible.builtin.apt_repository:
+  #     repo: "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
+  #     state: present
+  #     update_cache: True
+  #   when: ansible_distribution == "Debian"
 
-  - name: Install for Docker installation
-    ansible.builtin.apt:
-      name: 
-        - gpg
-        - ca-certificates
-        - git
-        - make
-      state: present
-      update_cache: yes
-      install_recommends: yes
+  # - name: Download Packages
+  #   ansible.builtin.package:
+  #     name:
+  #       - curl
+  #       - docker-ce
+  #       - docker-compose
+  #       - docker-compose-plugin
+  #     state: present
 
-  - name: set APT Key for Docker
-    ansible.builtin.apt_key:
-      url: https://download.docker.com/linux/ubuntu/gpg
-      keyring: /usr/share/keyrings/docker-archive-keyring.gpg
-      state: present
-    when: ansible_distribution == "Ubuntu"
-
-  - name: Add Docker repository into sources list for Ubuntu
-    ansible.builtin.apt_repository:
-      repo: "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu {{ ansible_distribution_release }} stable"
-      state: present
-      update_cache: True
-    when: ansible_distribution == "Ubuntu"
-
-  - name: set APT Key for Docker
-    ansible.builtin.apt_key:
-      url: https://download.docker.com/linux/debian/gpg
-      keyring: /usr/share/keyrings/docker-archive-keyring.gpg
-      state: present
-    when: ansible_distribution == "Debian"
-
-  - name: Add Docker repository into sources list for Debian
-    ansible.builtin.apt_repository:
-      repo: "deb [arch=amd64,arm64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian {{ ansible_distribution_release }} stable"
-      state: present
-      update_cache: True
-    when: ansible_distribution == "Debian"
-
-  - name: Download Packages
-    ansible.builtin.package:
-      name:
-        - curl
-        - docker-ce
-        - docker-compose
-        - docker-compose-plugin
-      state: present
+  - name: Stop Mythic
+    ansible.builtin.command: "./mythic-cli stop"
+    args:
+      chdir: "/opt/mythic"
+    become: yes
 
   - name: Remove existing Mythic installation
     ansible.builtin.file:
       path: "/opt/mythic"
       state: absent
+
+  - name: Stop Mythic
+    ansible.builtin.command: "docker system prune -a -f"
+    become: yes
 
   - name: Clone Mythic repo
     ansible.builtin.git:
@@ -147,30 +136,6 @@
     args:
       chdir: "/opt/mythic"
 
-  # - name: Start HTTP
-  #   ansible.builtin.command: "/opt/mythic/mythic-cli start http"
-  #   become: yes
-  #   args:
-  #     chdir: "/opt/mythic"
-
-  # - name: Start Poseidon
-  #   ansible.builtin.command: "/opt/mythic/mythic-cli start poseidon"
-  #   become: yes
-  #   args:
-  #     chdir: "/opt/mythic"
-
-  # - name: Start Apfell
-  #   ansible.builtin.command: "/opt/mythic/mythic-cli start apfell"
-  #   become: yes
-  #   args:
-  #     chdir: "/opt/mythic"
-
-  # - name: Start Thanatos
-  #   ansible.builtin.command: "/opt/mythic/mythic-cli start thanatos"
-  #   become: yes
-  #   args:
-  #     chdir: "/opt/mythic"
-
   - name: Make Mythic available on VPN
     ansible.builtin.command: "./mythic-cli config set mythic_server_bind_localhost_only false"
     become: yes
@@ -182,27 +147,6 @@
     become: yes
     args:
       chdir: "/opt/mythic"
-
-  # - name: Add System file for Teamserver
-  #   ansible.builtin.template:
-  #     src: "mythicteamserver.template"
-  #     dest: "/etc/systemd/system/mythicteamserver.service"
-
-  # - name: Check service file was created
-  #   ansible.builtin.stat:
-  #     path: "/etc/systemd/system/mythicteamserver.service"
-
-  # - name: Reload Systemd manager
-  #   ansible.builtin.command: "systemctl daemon-reload"
-  #   become: yes
-
-  # - name: Start Teamserver service
-  #   ansible.builtin.command: "systemctl start mythicteamserver.service"
-  #   become: yes
-
-  # - name: Enable Teamserver service
-  #   ansible.builtin.command: "systemctl enable mythicteamserver.service"
-  #   become: yes
 
   - name: Get Mythic Admin Password
     ansible.builtin.command: "./mythic-cli config get MYTHIC_ADMIN_PASSWORD"
