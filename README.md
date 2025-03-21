@@ -1,6 +1,6 @@
 # Ansible Role: Mythic Teamserver ([Ludus](https://ludus.cloud))
 
-An Ansible role that installs and spins up a Mythic Teamserver on a Debian or Ubuntu server. The role automatically installs a couple of Mythic agents but feel free to fork to add for your own use.
+An Ansible role that installs and spins up a Mythic Teamserver on a Debian or Ubuntu server. The role automatically installs a couple of Mythic agents.
 
 ## Dependencies
 
