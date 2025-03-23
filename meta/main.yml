@@ -6,7 +6,7 @@ dependencies:
 galaxy_info:
   role_name: ludus_mythic
   author: haha150
-  description: Ansible role for ludus to install Mythic c2
+  description: Ansible role for ludus to install Mythic C2
   company: ''
   license: GPLv3
   min_ansible_version: "2.10"
