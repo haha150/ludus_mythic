@@ -1,3 +1,23 @@
+  - name: Ensure old service has stopped
+    ansible.builtin.command: "systemctl stop mythic"
+    ignore_errors: true
+    become: true
+
+  - name: Ensure any old mythic service is disabled
+    ansible.builtin.command: "systemctl disable mythic"
+    become: true
+    ignore_errors: true
+
+  - name: Reload system manager
+    ansible.builtin.shell: "systemctl daemon-reload && systemctl reset-failed"
+    become: true
+
+  - name: Ensure old system files are gone
+    ansible.builtin.file:
+      path: "/etc/systemd/system/mythic.service"
+      state: absent
+    become: true
+
   - name: Stop Mythic
     ansible.builtin.command: "./mythic-cli stop"
     args:
@@ -99,6 +119,23 @@
     become: yes
     args:
       chdir: "/opt/mythic"
+
+  - name: Add System file for mythic
+    ansible.builtin.template:
+      src: "mythic.service"
+      dest: "/etc/systemd/system/mythic.service"
+
+  - name: Check service file was created
+    ansible.builtin.stat:
+      path: "/etc/systemd/system/mythic.service"
+
+  - name: Reload Systemd manager
+    ansible.builtin.command: "systemctl daemon-reload"
+    become: yes
+
+  - name: Enable mythic service
+    ansible.builtin.command: "systemctl enable mythic.service"
+    become: yes
 
   - name: Get Mythic Admin Password
     ansible.builtin.command: "./mythic-cli config get MYTHIC_ADMIN_PASSWORD"
