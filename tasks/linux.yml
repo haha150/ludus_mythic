@@ -23,7 +23,7 @@
     args:
       chdir: "/opt/mythic"
     become: yes
-    ignore_errors: true
+    ignore_errors: yes
 
   - name: Remove existing Mythic installation
     ansible.builtin.file:
