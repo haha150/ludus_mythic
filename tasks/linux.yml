@@ -23,13 +23,14 @@
     args:
       chdir: "/opt/mythic"
     become: yes
+    ignore_errors: true
 
   - name: Remove existing Mythic installation
     ansible.builtin.file:
       path: "/opt/mythic"
       state: absent
 
-  - name: Stop Mythic
+  - name: Cleanup Mythic
     ansible.builtin.command: "docker system prune -a -f"
     become: yes
 
