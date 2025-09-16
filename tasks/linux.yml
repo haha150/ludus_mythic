@@ -82,23 +82,11 @@
     args:
       chdir: "/opt/mythic"
 
-  # - name: Install Poseidon
-  #   ansible.builtin.command: "/opt/mythic/mythic-cli install github https://github.com/MythicAgents/poseidon -f"
-  #   become: yes
-  #   args:
-  #     chdir: "/opt/mythic"
-
-  # - name: Install Apfell
-  #   ansible.builtin.command: "/opt/mythic/mythic-cli install github https://github.com/MythicAgents/apfell -f"
-  #   become: yes
-  #   args:
-  #     chdir: "/opt/mythic"
-
-  # - name: Install Thanatos
-  #   ansible.builtin.command: "/opt/mythic/mythic-cli install github https://github.com/MythicAgents/thanatos -f"
-  #   become: yes
-  #   args:
-  #     chdir: "/opt/mythic"
+  - name: Install Apollo
+    ansible.builtin.command: "/opt/mythic/mythic-cli install github https://github.com/MythicAgents/Apollo -f"
+    become: yes
+    args:
+     chdir: "/opt/mythic"
 
   - name: Install Forge
     ansible.builtin.command: "/opt/mythic/mythic-cli install github https://github.com/MythicAgents/forge -f"
