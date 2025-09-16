@@ -6,14 +6,6 @@ An Ansible role that installs and spins up a Mythic Teamserver on a Debian or Ub
 
 None.
 
-## Example Playbook
-
-```yaml
-- hosts: mythic_teamserver_host
-  roles:
-    - haha150.ludus_mythic_teamserver
-```
-
 ## Example Ludus Range Config
 
 ```yaml
