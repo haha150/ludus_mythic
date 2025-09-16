@@ -64,6 +64,12 @@
     args:
       chdir: "/opt/mythic"
 
+  - name: Install HTTPX
+    ansible.builtin.command: "/opt/mythic/mythic-cli install github https://github.com/MythicC2Profiles/httpx -f"
+    become: yes
+    args:
+      chdir: "/opt/mythic"
+
   - name: Install SMB
     ansible.builtin.command: "/opt/mythic/mythic-cli install github https://github.com/MythicC2Profiles/smb -f"
     become: yes
